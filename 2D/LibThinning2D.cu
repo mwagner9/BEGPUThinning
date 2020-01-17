@@ -55,10 +55,16 @@ void Thinning2D(int width, int height, PixelType *data, PixelType *out)
 	//	Number of Cuda Blocks: dim3(1,(ImageHeight - overlapRows) / (blockDim.y*NBlockY - overlapRows))
 	// ----------------------------------------------------------------------------------------------------------------------------
 
-	// Pad image to multiple of 32 pixels in x-dimension and height to (a+0.5)*overlapRows
-	const int overlap = 128;
-	int sx = int((width + 31) / 32) * 32;
-	int sy = int((height - (overlap / 2) + (overlap - 1) / overlap) * overlap + overlap / 2); 
+	// Pad image to multiple of 32 pixels and power of 2 in x-dimension and height to (a*ny*by+(a-1)*overlapRows)
+	const int overlap = 64;
+	const int ny = 8;
+	int sx = 32;
+	while (sx < width) sx <<= 1;
+	int bx = sx / 32;
+	int by = 1024 / bx;
+	int b = (ny*by - overlap);
+	int a = int(((height - overlap) + b - 1) / b);
+	int sy = a*ny*by - (a - 1)*overlap;
 	size_t numelem = sx*sy;
 
 	// Allocate Temporary Device Memory
@@ -80,9 +86,6 @@ void Thinning2D(int width, int height, PixelType *data, PixelType *out)
 #endif
 
 	// Calculate Number of Blocks
-	const int ny = 8;
-	int bx = sx / 32;
-	int by = 1024 / bx;
 	dim3 grid(1, (sy - overlap) / (ny*by - overlap));
 	dim3 block(bx, by);
 	unsigned int smemsize = ny*by*bx*sizeof(unsigned int) + 32 * sizeof(unsigned int);
