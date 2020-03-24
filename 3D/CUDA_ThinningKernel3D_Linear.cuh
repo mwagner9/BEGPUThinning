@@ -540,7 +540,7 @@ __device__ void PrintPixelBlock(unsigned int n[], unsigned int val[], int x, int
 	__syncthreads();
 }
 
-__global__ void ThinningKernel3DLinear(unsigned char *gdata, unsigned char *odata, int *numChanges)
+__global__ void __launch_bounds__(1024) ThinningKernel3DLinear(unsigned char *gdata, unsigned char *odata, int *numChanges)
 {
 	__shared__ volatile unsigned int data[32][32];
 	__shared__ volatile int cmem[32];
@@ -701,7 +701,7 @@ __inline__ __device__ void PreTest(unsigned int pv[], unsigned int val[], volati
 	pv[BI] &= West3D(val[BI], n);
 }
 
-__global__ void ThinningKernel3DLinearBlock(unsigned short *gdata, unsigned short *odata, int *numChanges)
+__global__ void __launch_bounds__(1024) ThinningKernel3DLinearBlock(unsigned short *gdata, unsigned short *odata, int *numChanges)
 {
 	__shared__ volatile unsigned int data[64][2][64];
 	__shared__ volatile int cmem[32];

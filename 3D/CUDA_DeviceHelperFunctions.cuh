@@ -64,7 +64,7 @@ __inline__ __device__ unsigned int ShiftRight(unsigned int val)
 }
 
 template <typename T>
-__global__ void ExtractBitsKernel(unsigned int *idata, T *odata, unsigned int width, unsigned int height)
+__global__ void __launch_bounds__(1024) ExtractBitsKernel(unsigned int *idata, T *odata, unsigned int width, unsigned int height)
 {
 
 	// Allocate Shared Memory
@@ -97,7 +97,7 @@ __global__ void ExtractBitsKernel(unsigned int *idata, T *odata, unsigned int wi
 }
 
 template<typename T>
-__global__ void EncodeBitsKernel(T *iimg, unsigned int *oimg, unsigned int width, unsigned int height)
+__global__ void __launch_bounds__(1024) EncodeBitsKernel(T *iimg, unsigned int *oimg, unsigned int width, unsigned int height)
 {
 	__shared__ unsigned int data[WARP_SIZE][WARP_SIZE];
 
@@ -144,7 +144,7 @@ __global__ void EncodeBitsKernel(T *iimg, unsigned int *oimg, unsigned int width
 }
 
 template<typename T, typename TOut = unsigned char>
-__global__ void EncodeBitsKernelY(T *iimg, TOut *oimg, unsigned int width, unsigned int height)
+__global__ void __launch_bounds__(1024) EncodeBitsKernelY(T *iimg, TOut *oimg, unsigned int width, unsigned int height)
 {
 
 	// Calculate indices
@@ -169,7 +169,7 @@ __global__ void EncodeBitsKernelY(T *iimg, TOut *oimg, unsigned int width, unsig
 }
 
 template <typename T, typename TIn = unsigned char>
-__global__ void ExtractBitsKernelY(TIn *idata, T *odata, unsigned int width, unsigned int height)
+__global__ void __launch_bounds__(1024) ExtractBitsKernelY(TIn *idata, T *odata, unsigned int width, unsigned int height)
 {
 
 	// Calculate indices
