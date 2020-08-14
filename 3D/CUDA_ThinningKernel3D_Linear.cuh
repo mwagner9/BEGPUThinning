@@ -620,8 +620,8 @@ __global__ void __launch_bounds__(1024) ThinningKernel3DLinear(unsigned char *gd
 			}
 			else
 			{
-				if (blockIdx.y > 0) count &= 0xffffff00;
-				if (blockIdx.y < (gridDim.y - 1)) count &= 0x00ffffff;
+				if (blockIdx.y > 0) count &= 0xffff0000;
+				if (blockIdx.y < (gridDim.y - 1)) count &= 0x0000ffff;
 			}
 			count = (count == 0) ? 0 : 1;
 		}
@@ -791,27 +791,27 @@ __global__ void __launch_bounds__(1024) ThinningKernel3DLinearBlock(unsigned sho
 			{
 				if ((blockIdx.x == 0) || (threadIdx.x >= 16))
 				{
-					count |= ((blockIdx.y > 0) ? ((val[0] ^ oval[0]) & 0xffffff00) : (val[0] ^ oval[0]));
-					count |= ((blockIdx.y < (gridDim.y - 1)) ? ((val[2] ^ oval[2]) & 0x00ffffff) : (val[2] ^ oval[2]));
+					count |= ((blockIdx.y > 0) ? ((val[0] ^ oval[0]) & 0xffff0000) : (val[0] ^ oval[0]));
+					count |= ((blockIdx.y < (gridDim.y - 1)) ? ((val[2] ^ oval[2]) & 0x0000ffff) : (val[2] ^ oval[2]));
 						
 				}
 				if ((blockIdx.x == (gridDim.x - 1)) || (threadIdx.x < 16))
 				{
-					count |= ((blockIdx.y > 0) ? ((val[1] ^ oval[1]) & 0xffffff00) : (val[1] ^ oval[1]));
-					count |= ((blockIdx.y < (gridDim.y - 1)) ? ((val[3] ^ oval[3]) & 0x00ffffff) : (val[3] ^ oval[3]));
+					count |= ((blockIdx.y > 0) ? ((val[1] ^ oval[1]) & 0xffff0000) : (val[1] ^ oval[1]));
+					count |= ((blockIdx.y < (gridDim.y - 1)) ? ((val[3] ^ oval[3]) & 0x0000ffff) : (val[3] ^ oval[3]));
 				}
 			}
 			if ((blockIdx.z == (gridDim.z - 1)) && (threadIdx.z < 16))
 			{
 				if ((blockIdx.x == 0) || (threadIdx.x >= 16))
 				{
-					count |= ((blockIdx.y > 0) ? ((val[4] ^ oval[4]) & 0xffffff00) : (val[4] ^ oval[4]));
-					count |= ((blockIdx.y < (gridDim.y - 1)) ? ((val[6] ^ oval[6]) & 0x00ffffff) : (val[6] ^ oval[6]));
+					count |= ((blockIdx.y > 0) ? ((val[4] ^ oval[4]) & 0xffff0000) : (val[4] ^ oval[4]));
+					count |= ((blockIdx.y < (gridDim.y - 1)) ? ((val[6] ^ oval[6]) & 0x0000ffff) : (val[6] ^ oval[6]));
 				}
 				if ((blockIdx.x == (gridDim.x - 1)) || (threadIdx.x < 16))
 				{
-					count |= ((blockIdx.y > 0) ? ((val[5] ^ oval[5]) & 0xffffff00) : (val[5] ^ oval[5]));
-					count |= ((blockIdx.y < (gridDim.y - 1)) ? ((val[7] ^ oval[7]) & 0x00ffffff) : (val[7] ^ oval[7]));
+					count |= ((blockIdx.y > 0) ? ((val[5] ^ oval[5]) & 0xffff0000) : (val[5] ^ oval[5]));
+					count |= ((blockIdx.y < (gridDim.y - 1)) ? ((val[7] ^ oval[7]) & 0x0000ffff) : (val[7] ^ oval[7]));
 				}
 			}
 		}
